@@ -1,3 +1,5 @@
+**[Install](#install)** | **[Contributing](#contributing)** 
+
 # xpc-connect
 
 [![build status](https://travis-ci.com/jongear/xpc-connect.svg?branch=master)](https://travis-ci.com/jongear/xpc-connect) [![downloads](https://img.shields.io/npm/dt/xpc-connect.svg)](https://www.npmjs.com/package/xpc-connect) [![Contributor count](https://img.shields.io/github/contributors/jongear/xpc-connect.svg)](https://github.com/jongear/xpc-connect/graphs/contributors)
@@ -53,3 +55,6 @@ MacPorts and other similiar tools might be adding an incompatible compiler to yo
 
 [![Analytics](https://ga-beacon.appspot.com/UA-56089547-1/sandeepmistry/node-xpc-connect?pixel)](https://github.com/igrigorik/ga-beacon)
 
+## Contributing
+
+Please checkout the [contributing guide](CONTRIBUTING.md) to learn about our release process.
