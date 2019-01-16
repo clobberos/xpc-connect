@@ -43,6 +43,9 @@
   "engines": {
     "node": ">=0.8"
   },
+  "os": [
+    "darwin"
+  ],
   "dependencies": {
     "bindings": "^1.3.1",
     "nan": "^2.12.1",
