@@ -21,7 +21,7 @@ matrix:
       osx_image: xcode9.3
       node_js: '8'
 
-    - name: '[OSX] 10.13 Node.js v10.x xcode` 9.3'
+    - name: '[OSX] 10.13 Node.js v10.x xcode 9.3'
       os: osx
       osx_image: xcode9.3
       node_js: '10'
