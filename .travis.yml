@@ -7,45 +7,26 @@ notifications:
 matrix:
   fast_finish: true
   include:
-    #################
-    # Ubuntu Trusty #
-    #################
-
-    - name: '[Trusty] Node.js v6.x'
-      sudo: required
-      dist: trusty
-      node_js: '6'
-
-    - name: '[Trusty] Node.js v8.x'
-      sudo: required
-      dist: trusty
-      node_js: '8'
-
-    - name: "[Trusty] Node.js v10.x"
-      sudo: required
-      dist: trusty
-      node_js: "10"
-
     ########
     # OS X #
     ########
 
-    - name: '[OSX] Node.js v6.x'
+    - name: '[OSX] 10.13 Node.js v6.x'
       os: osx
       osx_image: xcode9.3
       node_js: '6'
 
-    - name: '[OSX] Node.js v8.x'
+    - name: '[OSX] 10.13 Node.js v8.x'
       os: osx
       osx_image: xcode9.3
       node_js: '8'
 
-    - name: '[OSX] Node.js v10.x xcode` 9.3'
+    - name: '[OSX] 10.13 Node.js v10.x xcode 9.3'
       os: osx
       osx_image: xcode9.3
       node_js: '10'
 
-    - name: '[OSX] Node.js v10.x xcode10'
+    - name: '[OSX] 10.13 Node.js v10.x xcode10'
       os: osx
       osx_image: xcode10
       node_js: '10'
