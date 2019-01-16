@@ -28,7 +28,8 @@ NAN_MODULE_INIT(XpcConnection::Init) {
 
 XpcConnection::XpcConnection(std::string serviceName) :
   node::ObjectWrap(),
-  serviceName(serviceName) {
+  serviceName(serviceName),
+  asyncResource("XpcConnection") {
 
   this->asyncHandle = new uv_async_t;
 
@@ -140,7 +141,7 @@ xpc_object_t XpcConnection::ObjectToXpcObject(Local<Object> object) {
     if (propertyName->IsString()) {
       Nan::Utf8String propertyNameString(propertyName);
 
-      Local<Value> propertyValue = object->GetRealNamedProperty(propertyName->ToString());
+      Local<Value> propertyValue = Nan::GetRealNamedProperty(object, propertyName->ToString()).ToLocalChecked();
 
       xpc_object_t xpcValue = XpcConnection::ValueToXpcObject(propertyValue);
       xpc_dictionary_set_value(xpcObject, *propertyNameString, xpcValue);
@@ -250,8 +251,8 @@ void XpcConnection::processEventQueue() {
         Nan::New("error").ToLocalChecked(),
         Nan::New(message).ToLocalChecked()
       };
-
-      Nan::MakeCallback(Nan::New<Object>(this->This), Nan::New("emit").ToLocalChecked(), 2, argv);
+      
+      this->asyncResource.runInAsyncScope(Nan::New<Object>(this->This), Nan::New("emit").ToLocalChecked(), 2, argv);
     } else if (eventType == XPC_TYPE_DICTIONARY) {
       Local<Object> eventObject = XpcConnection::XpcDictionaryToObject(event);
 
@@ -260,7 +261,7 @@ void XpcConnection::processEventQueue() {
         eventObject
       };
 
-      Nan::MakeCallback(Nan::New<Object>(this->This), Nan::New("emit").ToLocalChecked(), 2, argv);
+      this->asyncResource.runInAsyncScope(Nan::New<Object>(this->This), Nan::New("emit").ToLocalChecked(), 2, argv);
     }
 
     xpc_release(event);

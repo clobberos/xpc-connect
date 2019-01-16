@@ -1,30 +1,57 @@
 {
-  "name": "xpc-connection",
-  "version": "0.1.5",
+  "name": "xpc-connect",
+  "version": "0.0.0-semantically-released",
   "description": "XPC Connection binding for node.js",
   "main": "index.js",
-  "scripts": {},
+  "gypfile": true,
+  "files": [
+    "build",
+    "README.md"
+  ],
+  "scripts": {
+    "commit": "git-cz",
+    "prebuild": "rimraf build",
+    "build": "node-gyp rebuild",
+    "start": "node index.js"
+  },
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-conventional-changelog"
+    }
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/sandeepmistry/node-xpc-connection.git"
+    "url": "https://github.com/jongear/xpc-connect.git"
   },
   "bugs": {
-    "url": "https://github.com/sandeepmistry/node-xpc-connection/issues"
+    "url": "https://github.com/jongear/xpc-connect/issues"
   },
   "keywords": [
     "XPC",
-    "XPC connection"
+    "XPC connect"
   ],
   "author": "Sandeep Misty <sandeep.mistry@gmail.com>",
+  "maintainers": [
+    {
+      "name": "Jon Gear",
+      "email": "askjon@jongear.io",
+      "url": "http://jongear.io"
+    }
+  ],
   "license": "MIT",
   "readmeFilename": "README.md",
   "engines": {
     "node": ">=0.8"
   },
-  "os": [
-    "darwin"
-  ],
   "dependencies": {
-    "nan": "^2.4.0"
+    "nan": "^2.12.1",
+    "node-gyp": "^3.8.0"
+  },
+  "devDependencies": {
+    "commitizen": "^3.0.5",
+    "cz-conventional-changelog": "^2.1.0",
+    "ghooks": "^2.0.4",
+    "rimraf": "^2.6.3",
+    "semantic-release": "^15.13.3"
   }
 }
