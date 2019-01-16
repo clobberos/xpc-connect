@@ -1,7 +1,6 @@
-# node-xpc-connection
+# xpc-connect
 
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/sandeepmistry/node-xpc-connection?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
+[![build status](https://travis-ci.com/jongear/xpc-connect.svg?branch=master)](https://travis-ci.com/jongear/xpc-connect) [![downloads](https://img.shields.io/npm/dt/xpc-connect.svg)](https://www.npmjs.com/package/xpc-connect) [![Contributor count](https://img.shields.io/github/contributors/jongear/xpc-connect.svg)](https://github.com/jongear/xpc-connect/graphs/contributors)
 
 Connection binding for node.js
 
@@ -14,28 +13,32 @@ Connection binding for node.js
  * uuid
  * object
 
+## Install
+```js
+npm install xpc-connect
+```
+
 ## Example
 
-```javascript
-var XpcConnection = require('xpc-connection');
+```js
+const xpcConnect = require('xpc-connect');
+const xpcConnect = new xpcConnect('<Mach service name>');
 
-var xpcConnection = new XpcConnection('<Mach service name>');
-
-xpcConnection.on('error', function(message) {
+xpcConnect.on('error', function(message) {
     ...
 });
 
-xpcConnection.on('event', function(event) {
+xpcConnect.on('event', function(event) {
     ...
 });
 
-xpcConnection.setup();
+xpcConnect.setup();
 
-var mesage = {
+const mesage = {
     ... 
 };
 
-xpcConnection.sendMessage(mesage);
+xpcConnect.sendMessage(mesage);
 ```
 
 ## Build Errors
@@ -46,7 +49,7 @@ Before creating a new issue for build errors, please set your path to the follow
 /usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin
 ```
 
-MacPorts and other similiar tools might be adding an incompatible compiler to your PATH (see issue [#2](https://github.com/sandeepmistry/node-xpc-connection/issues/2)) for more details.
+MacPorts and other similiar tools might be adding an incompatible compiler to your PATH (see issue [#2](https://github.com/sandeepmistry/node-xpc-connect/issues/2)) for more details.
 
-[![Analytics](https://ga-beacon.appspot.com/UA-56089547-1/sandeepmistry/node-xpc-connection?pixel)](https://github.com/igrigorik/ga-beacon)
+[![Analytics](https://ga-beacon.appspot.com/UA-56089547-1/sandeepmistry/node-xpc-connect?pixel)](https://github.com/igrigorik/ga-beacon)
 
