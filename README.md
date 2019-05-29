@@ -23,8 +23,8 @@ npm install xpc-connect
 ## Example
 
 ```js
-const xpcConnect = require('xpc-connect');
-const xpcConnect = new xpcConnect('<Mach service name>');
+const XpcConnect = require('xpc-connect');
+const xpcConnect = new XpcConnect('<Mach service name>');
 
 xpcConnect.on('error', function(message) {
     ...
