@@ -17,6 +17,7 @@ public:
 
   static NAN_METHOD(New);
   static NAN_METHOD(Setup);
+  static NAN_METHOD(Shutdown);
   static NAN_METHOD(SendMessage);
 
 private:
@@ -35,6 +36,7 @@ private:
   static void AsyncCloseCallback(uv_async_t* handle);
 
   void setup();
+  void shutdown();
   void sendMessage(xpc_object_t message);
   void queueEvent(xpc_object_t event);
   void processEventQueue();
