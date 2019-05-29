@@ -12,9 +12,27 @@
     "commit": "git-cz",
     "prebuild": "rimraf build",
     "build": "node-gyp rebuild",
-    "start": "node index.js"
+    "lint": "eslint .",
+    "start": "node index.js",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "report-coverage": "npm run test:coverage && cat ./coverage/lcov.info | codecov",
+    "validate": "npm run test:coverage"
+  },
+  "jest": {
+    "testURL": "http://localhost",
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "json"
+    ]
   },
   "config": {
+    "ghooks": {
+      "pre-commit": "npm run validate"
+    },
     "commitizen": {
       "path": "node_modules/cz-conventional-changelog"
     }
@@ -35,7 +53,7 @@
     {
       "name": "Jon Gear",
       "email": "askjon@jongear.io",
-      "url": "http://jongear.io"
+      "url": "https://gear.dev"
     }
   ],
   "license": "MIT",
@@ -52,11 +70,16 @@
     "node-gyp": "^3.8.0"
   },
   "devDependencies": {
+    "codecov": "^3.5.0",
     "commitizen": "^3.1.1",
     "cz-conventional-changelog": "^2.1.0",
+    "eslint": "^5.16.0",
+    "eslint-config-prettier": "^4.3.0",
+    "eslint-plugin-prettier": "^3.1.0",
     "ghooks": "^2.0.4",
+    "jest": "^24.8.0",
+    "prettier": "^1.17.1",
     "rimraf": "^2.6.3",
     "semantic-release": "^15.13.14"
   }
 }
-
