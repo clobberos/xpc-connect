@@ -4,7 +4,7 @@
 
 [![build status](https://travis-ci.com/jongear/xpc-connect.svg?branch=master)](https://travis-ci.com/jongear/xpc-connect) [![downloads](https://img.shields.io/npm/dt/xpc-connect.svg)](https://www.npmjs.com/package/xpc-connect) [![Contributor count](https://img.shields.io/github/contributors/jongear/xpc-connect.svg)](https://github.com/jongear/xpc-connect/graphs/contributors)
 
-Connection binding for node.js
+[XPC Services connection](https://developer.apple.com/documentation/xpc/xpc_services_connection_h) bindings for node.js
 
 ## Supported data types
 
