@@ -24,7 +24,7 @@ NAN_MODULE_INIT(XpcConnection::Init) {
   Nan::SetPrototypeMethod(tmpl, "shutdown", Shutdown);
   Nan::SetPrototypeMethod(tmpl, "sendMessage", SendMessage);
 
-  target->Set(Nan::New("XpcConnection").ToLocalChecked(), tmpl->GetFunction());
+  Nan::Set(target, Nan::New("XpcConnection").ToLocalChecked(), Nan::GetFunction(tmpl).ToLocalChecked());
 }
 
 XpcConnection::XpcConnection(std::string serviceName) :
@@ -119,7 +119,7 @@ xpc_object_t XpcConnection::ValueToXpcObject(Local<Value> value) {
   xpc_object_t xpcObject = NULL;
 
   if (value->IsInt32() || value->IsUint32()) {
-    xpcObject = xpc_int64_create(value->IntegerValue());
+    xpcObject = xpc_int64_create(value->IntegerValue(Nan::GetCurrentContext()).FromJust());
   } else if (value->IsString()) {
     Nan::Utf8String valueString(value);
 
@@ -129,9 +129,9 @@ xpc_object_t XpcConnection::ValueToXpcObject(Local<Value> value) {
 
     xpcObject = XpcConnection::ArrayToXpcObject(valueArray);
   } else if (node::Buffer::HasInstance(value)) {
-    Local<Object> valueObject = value->ToObject();
+    Local<Object> valueObject = value.As<Object>();
 
-    if (valueObject->HasRealNamedProperty(Nan::New("isUuid").ToLocalChecked())) {
+    if (Nan::HasRealNamedProperty(valueObject, Nan::New("isUuid").ToLocalChecked()).FromMaybe(false)) {
       uuid_t *uuid = (uuid_t *)node::Buffer::Data(valueObject);
 
       xpcObject = xpc_uuid_create(*uuid);
@@ -139,7 +139,7 @@ xpc_object_t XpcConnection::ValueToXpcObject(Local<Value> value) {
       xpcObject = xpc_data_create(node::Buffer::Data(valueObject), node::Buffer::Length(valueObject));
     }
   } else if (value->IsObject()) {
-    Local<Object> valueObject = value->ToObject();
+    Local<Object> valueObject = value.As<Object>();
 
     xpcObject = XpcConnection::ObjectToXpcObject(valueObject);
   } else {
@@ -151,7 +151,7 @@ xpc_object_t XpcConnection::ValueToXpcObject(Local<Value> value) {
 xpc_object_t XpcConnection::ObjectToXpcObject(Local<Object> object) {
   xpc_object_t xpcObject = xpc_dictionary_create(NULL, NULL, 0);
 
-  Local<Array> propertyNames = object->GetPropertyNames();
+  Local<Array> propertyNames = Nan::GetPropertyNames(object).ToLocalChecked();
 
   for(uint32_t i = 0; i < propertyNames->Length(); i++) {
     Local<Value> propertyName = propertyNames->Get(i);
@@ -159,7 +159,7 @@ xpc_object_t XpcConnection::ObjectToXpcObject(Local<Object> object) {
     if (propertyName->IsString()) {
       Nan::Utf8String propertyNameString(propertyName);
 
-      Local<Value> propertyValue = Nan::GetRealNamedProperty(object, propertyName->ToString()).ToLocalChecked();
+      Local<Value> propertyValue = Nan::GetRealNamedProperty(object, propertyName.As<String>()).ToLocalChecked();
 
       xpc_object_t xpcValue = XpcConnection::ValueToXpcObject(propertyValue);
       xpc_dictionary_set_value(xpcObject, *propertyNameString, xpcValue);
