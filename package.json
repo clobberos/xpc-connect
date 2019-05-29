@@ -5,7 +5,9 @@
   "main": "index.js",
   "gypfile": true,
   "files": [
+    "binding.gyp",
     "build",
+    "src",
     "README.md"
   ],
   "scripts": {
