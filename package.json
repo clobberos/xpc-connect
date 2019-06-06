@@ -33,7 +33,8 @@
   },
   "config": {
     "ghooks": {
-      "pre-commit": "npm run validate"
+      "pre-commit": "npm run validate",
+      "prepare-commit-msg": "exec < /dev/tty && ./node_modules/.bin/git-cz --hook"
     },
     "commitizen": {
       "path": "node_modules/cz-conventional-changelog"
