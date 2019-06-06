@@ -82,6 +82,6 @@
     "jest": "^24.8.0",
     "prettier": "^1.17.1",
     "rimraf": "^2.6.3",
-    "semantic-release": "^15.13.14"
+    "semantic-release": "^15.13.15"
   }
 }
