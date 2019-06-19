@@ -1,11 +1,11 @@
 {
   'targets': [
     {
-      'target_name': 'xpc-connection',
+      'target_name': 'xpc-connect',
       'conditions': [
         ['OS=="mac"', {
           'sources': [
-            'src/XpcConnection.cpp'
+            'src/XpcConnect.cpp'
           ],
           # cflags on OS X are stupid and have to be defined like this
           'defines': [

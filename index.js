@@ -1,9 +1,9 @@
 var events = require('events');
 
-var binding = require('bindings')('xpc-connection.node');
-var XpcConnection = binding.XpcConnection;
+var binding = require('bindings')('xpc-connect.node');
+var XpcConnect = binding.XpcConnect;
 
-inherits(XpcConnection, events.EventEmitter);
+inherits(XpcConnect, events.EventEmitter);
 
 // extend prototype
 function inherits(target, source) {
@@ -12,4 +12,4 @@ function inherits(target, source) {
   }
 }
 
-module.exports = XpcConnection;
+module.exports = XpcConnect;
