@@ -35,6 +35,11 @@ matrix:
       os: osx
       osx_image: xcode10.2
       node_js: '10'
+
+    - name: '[OSX] macOS 10.14 — Xcode 10.2.1 — Node.js v12.x'
+      os: osx
+      osx_image: xcode10.2
+      node_js: '12'
       after_success:
         - 'echo -e "Host *\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config'
         - semantic-release
