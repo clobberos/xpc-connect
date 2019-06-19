@@ -10,7 +10,7 @@
 #include <nan.h>
 
 
-class XpcConnection : public node::ObjectWrap {
+class XpcConnect : public node::ObjectWrap {
 
 public:
   static NAN_MODULE_INIT(Init);
@@ -21,8 +21,8 @@ public:
   static NAN_METHOD(SendMessage);
 
 private:
-  XpcConnection(std::string serviceName);
-  ~XpcConnection();
+  XpcConnect(std::string serviceName);
+  ~XpcConnect();
 
   static xpc_object_t ValueToXpcObject(v8::Local<v8::Value> object);
   static xpc_object_t ObjectToXpcObject(v8::Local<v8::Object> object);
