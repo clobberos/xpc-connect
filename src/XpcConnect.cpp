@@ -154,7 +154,7 @@ xpc_object_t XpcConnect::ObjectToXpcObject(Local<Object> object) {
   Local<Array> propertyNames = Nan::GetPropertyNames(object).ToLocalChecked();
 
   for(uint32_t i = 0; i < propertyNames->Length(); i++) {
-    Local<Value> propertyName = propertyNames->Get(i);
+    Local<Value> propertyName = Nan::Get(propertyNames, i).ToLocalChecked();
 
     if (propertyName->IsString()) {
       Nan::Utf8String propertyNameString(propertyName);
@@ -176,7 +176,7 @@ xpc_object_t XpcConnect::ArrayToXpcObject(Local<Array> array) {
   xpc_object_t xpcArray = xpc_array_create(NULL, 0);
 
   for(uint32_t i = 0; i < array->Length(); i++) {
-    Local<Value> value = array->Get(i);
+    Local<Value> value = Nan::Get(array, i).ToLocalChecked();
 
     xpc_object_t xpcValue = XpcConnect::ValueToXpcObject(value);
     xpc_array_append_value(xpcArray, xpcValue);
@@ -216,7 +216,7 @@ Local<Object> XpcConnect::XpcDictionaryToObject(xpc_object_t xpcDictionary) {
   Local<Object> object = Nan::New<Object>();
 
   xpc_dictionary_apply(xpcDictionary, ^bool(const char *key, xpc_object_t value) {
-    object->Set(Nan::New<String>(key).ToLocalChecked(), XpcConnect::XpcObjectToValue(value));
+    Nan::Set(object, Nan::New<String>(key).ToLocalChecked(), XpcConnect::XpcObjectToValue(value));
 
     return true;
   });
@@ -228,7 +228,7 @@ Local<Array> XpcConnect::XpcArrayToArray(xpc_object_t xpcArray) {
   Local<Array> array = Nan::New<Array>();
 
   xpc_array_apply(xpcArray, ^bool(size_t index, xpc_object_t value) {
-    array->Set(Nan::New<Number>(index), XpcConnect::XpcObjectToValue(value));
+    Nan::Set(array, Nan::New<Number>(index), XpcConnect::XpcObjectToValue(value));
 
     return true;
   });
