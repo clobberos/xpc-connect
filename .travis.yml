@@ -11,11 +11,6 @@ matrix:
     # OS X #
     ########
 
-    - name: '[OSX] macOS 10.13 — Xcode 9.3 — Node.js v6.x'
-      os: osx
-      osx_image: xcode9.3
-      node_js: '6'
-
     - name: '[OSX] macOS 10.13 — Xcode 9.3 — Node.js v8.x'
       os: osx
       osx_image: xcode9.3
