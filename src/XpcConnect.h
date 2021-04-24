@@ -44,7 +44,7 @@ private:
 private:
   std::string serviceName;
   dispatch_queue_t dispatchQueue;
-  xpc_connection_t xpcConnnection;
+  xpc_connection_t xpcConnection;
 
   Nan::Persistent<v8::Object> This;
   Nan::AsyncResource asyncResource;

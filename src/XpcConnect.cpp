@@ -48,25 +48,25 @@ XpcConnect::~XpcConnect() {
 
 void XpcConnect::setup() {
   this->dispatchQueue = dispatch_queue_create(this->serviceName.c_str(), 0);
-  this->xpcConnnection = xpc_connection_create_mach_service(this->serviceName.c_str(), this->dispatchQueue, XPC_CONNECTION_MACH_SERVICE_PRIVILEGED);
+  this->xpcConnection = xpc_connection_create_mach_service(this->serviceName.c_str(), this->dispatchQueue, XPC_CONNECTION_MACH_SERVICE_PRIVILEGED);
 
-  xpc_connection_set_event_handler(this->xpcConnnection, ^(xpc_object_t event) {
+  xpc_connection_set_event_handler(this->xpcConnection, ^(xpc_object_t event) {
     xpc_retain(event);
     this->queueEvent(event);
   });
 
-  xpc_connection_resume(this->xpcConnnection);
+  xpc_connection_resume(this->xpcConnection);
 }
 
 void XpcConnect::shutdown() {
-  xpc_connection_suspend(this->xpcConnnection);
+  xpc_connection_suspend(this->xpcConnection);
   uv_close((uv_handle_t*)this->asyncHandle, (uv_close_cb)XpcConnect::AsyncCloseCallback);
   uv_mutex_destroy(&this->eventQueueMutex);
 }
 
 
 void XpcConnect::sendMessage(xpc_object_t message) {
-  xpc_connection_send_message(this->xpcConnnection, message);
+  xpc_connection_send_message(this->xpcConnection, message);
 }
 
 void XpcConnect::queueEvent(xpc_object_t event) {
@@ -237,9 +237,9 @@ Local<Array> XpcConnect::XpcArrayToArray(xpc_object_t xpcArray) {
 }
 
 void XpcConnect::AsyncCallback(uv_async_t* handle) {
-  XpcConnect *xpcConnnection = (XpcConnect*)handle->data;
+  XpcConnect *xpcConnection = (XpcConnect*)handle->data;
 
-  xpcConnnection->processEventQueue();
+  xpcConnection->processEventQueue();
 }
 
 void XpcConnect::AsyncCloseCallback(uv_async_t* handle) {
