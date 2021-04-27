@@ -30,23 +30,36 @@ NAN_MODULE_INIT(XpcConnect::Init) {
 XpcConnect::XpcConnect(std::string serviceName) :
   node::ObjectWrap(),
   serviceName(serviceName),
-  asyncResource("XpcConnect") {
-
-  this->asyncHandle = new uv_async_t;
-
-  uv_async_init(uv_default_loop(), this->asyncHandle, (uv_async_cb)XpcConnect::AsyncCallback);
-  uv_mutex_init(&this->eventQueueMutex);
-
-  this->asyncHandle->data = this;
+  dispatchQueue(nullptr),
+  xpcConnection(nullptr),
+  calledSetup(false),
+  calledShutdown(false),
+  connectionClosed(false),
+  asyncResource(nullptr),
+  asyncHandle(nullptr) {
 }
 
 XpcConnect::~XpcConnect() {
-  uv_close((uv_handle_t*)this->asyncHandle, (uv_close_cb)XpcConnect::AsyncCloseCallback);
-
-  uv_mutex_destroy(&this->eventQueueMutex);
 }
 
 void XpcConnect::setup() {
+  if (this->calledSetup) {
+    return;
+  }
+  this->calledSetup = true;
+
+  // Prevent `this`/the wrapped JS object from being destroyed until the XPC
+  // connection is fully closed (after a call to shutdown())
+  this->Ref();
+
+  this->asyncHandle = new uv_async_t;
+  uv_async_init(uv_default_loop(), this->asyncHandle, (uv_async_cb)XpcConnect::AsyncCallback);
+  this->asyncHandle->data = this;
+
+  this->asyncResource = new Nan::AsyncResource("XpcConnect");
+
+  uv_mutex_init(&this->eventQueueMutex);
+
   this->dispatchQueue = dispatch_queue_create(this->serviceName.c_str(), 0);
   this->xpcConnection = xpc_connection_create_mach_service(this->serviceName.c_str(), this->dispatchQueue, XPC_CONNECTION_MACH_SERVICE_PRIVILEGED);
 
@@ -55,25 +68,27 @@ void XpcConnect::setup() {
     this->queueEvent(event);
   });
 
-  xpc_connection_resume(this->xpcConnection);
+  xpc_connection_activate(this->xpcConnection);
 }
 
 void XpcConnect::shutdown() {
-  xpc_connection_suspend(this->xpcConnection);
-  uv_close((uv_handle_t*)this->asyncHandle, (uv_close_cb)XpcConnect::AsyncCloseCallback);
-  uv_mutex_destroy(&this->eventQueueMutex);
+  this->calledShutdown = true;
+  if (this->xpcConnection != nullptr) {
+    xpc_connection_cancel(this->xpcConnection);
+  }
 }
 
-
 void XpcConnect::sendMessage(xpc_object_t message) {
-  xpc_connection_send_message(this->xpcConnection, message);
+  if (this->xpcConnection != nullptr) {
+    xpc_connection_send_message(this->xpcConnection, message);
+  }
 }
 
 void XpcConnect::queueEvent(xpc_object_t event) {
 
   uv_mutex_lock(&this->eventQueueMutex);
   eventQueue.push(event);
-  uv_mutex_unlock(&eventQueueMutex);
+  uv_mutex_unlock(&this->eventQueueMutex);
 
   uv_async_send(this->asyncHandle);
 }
@@ -90,7 +105,6 @@ NAN_METHOD(XpcConnect::New) {
 
   XpcConnect* p = new XpcConnect(serviceName);
   p->Wrap(info.This());
-  p->This.Reset(info.This());
   info.GetReturnValue().Set(info.This());
 }
 
@@ -100,7 +114,11 @@ NAN_METHOD(XpcConnect::Setup) {
 
   XpcConnect* p = node::ObjectWrap::Unwrap<XpcConnect>(info.This());
 
-  p->setup();
+  if (p->calledSetup) {
+    Nan::ThrowError("XpcConnect setup already called");
+  } else {
+    p->setup();
+  }
 
   info.GetReturnValue().SetUndefined();
 }
@@ -263,14 +281,24 @@ void XpcConnect::processEventQueue() {
         message = "connection interrupted";
       } else if (event == XPC_ERROR_CONNECTION_INVALID) {
         message = "connection invalid";
+        this->connectionClosed = true;
+
+        // Backwards compatibility: XPC always emits connection invalid
+        // at the end of a connection; it's labeled as an "error" but
+        // really it's standard behavior. However, previous versions of
+        // XpcConnect didn't emit connection invalid when calling
+        // shutdown(), so keep it that way.
+        if (this->calledShutdown) {
+          break;
+        }
       }
 
       Local<Value> argv[2] = {
         Nan::New("error").ToLocalChecked(),
         Nan::New(message).ToLocalChecked()
       };
-      
-      this->asyncResource.runInAsyncScope(Nan::New<Object>(this->This), Nan::New("emit").ToLocalChecked(), 2, argv);
+
+      this->asyncResource->runInAsyncScope(this->handle(), Nan::New("emit").ToLocalChecked(), 2, argv);
     } else if (eventType == XPC_TYPE_DICTIONARY) {
       Local<Object> eventObject = XpcConnect::XpcDictionaryToObject(event);
 
@@ -279,20 +307,39 @@ void XpcConnect::processEventQueue() {
         eventObject
       };
 
-      this->asyncResource.runInAsyncScope(Nan::New<Object>(this->This), Nan::New("emit").ToLocalChecked(), 2, argv);
+      this->asyncResource->runInAsyncScope(this->handle(), Nan::New("emit").ToLocalChecked(), 2, argv);
     }
 
     xpc_release(event);
   }
 
   uv_mutex_unlock(&this->eventQueueMutex);
+
+  if (this->connectionClosed && this->xpcConnection != nullptr) {
+    // Connection has been closed/cancelled, do cleanup.
+    // (XPC_ERROR_CONNECTION_INVALID is always/only emitted as the last
+    // event of a connection, so there will be no more queued events.)
+
+    xpc_release(this->xpcConnection);
+    this->xpcConnection = nullptr;
+    dispatch_release(this->dispatchQueue);
+    this->dispatchQueue = nullptr;
+    uv_mutex_destroy(&this->eventQueueMutex);
+    uv_close((uv_handle_t*)this->asyncHandle, (uv_close_cb)XpcConnect::AsyncCloseCallback);
+    this->asyncHandle = nullptr;
+    delete this->asyncResource;
+    this->asyncResource = nullptr;
+    this->Unref();
+  }
 }
 
 NAN_METHOD(XpcConnect::SendMessage) {
   Nan::HandleScope scope;
   XpcConnect* p = node::ObjectWrap::Unwrap<XpcConnect>(info.This());
 
-  if (info.Length() > 0) {
+  if (!p->calledSetup) {
+    Nan::ThrowError("XpcConnect cannot send message before setup is called");
+  } else if (info.Length() > 0) {
     Local<Value> arg0 = info[0];
     if (arg0->IsObject()) {
       Local<Object> object = Local<Object>::Cast(arg0);
