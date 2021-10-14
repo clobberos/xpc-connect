@@ -44,11 +44,12 @@ private:
 private:
   std::string serviceName;
   dispatch_queue_t dispatchQueue;
-  xpc_connection_t xpcConnnection;
+  xpc_connection_t xpcConnection;
+  bool calledSetup;
+  bool calledShutdown;
+  bool connectionClosed;
 
-  Nan::Persistent<v8::Object> This;
-  Nan::AsyncResource asyncResource;
-
+  Nan::AsyncResource* asyncResource;
   uv_async_t* asyncHandle;
   uv_mutex_t eventQueueMutex;
   std::queue<xpc_object_t> eventQueue;
