@@ -1,12 +1,13 @@
 version: 2.1
 
 executors:
-  linux:
-    docker:
-      - image: cimg/base:2020.01
-  macos:
+  # list of supported xcode versions https://circleci.com/docs/2.0/testing-ios/#supported-xcode-versions
+  macos/11.6.1:
     macos:
-      xcode: 11.4
+      xcode: 13.1.0
+  macos/10.15.5:
+    macos:
+      xcode: 12.4.0
 
 orbs:
   node: circleci/node@4.7.0
@@ -34,5 +35,5 @@ workflows:
       - build:
           matrix:
             parameters:
-              os: [linux, macos]
+              os: [macos/11.6.1, macos/10.15.5]
               node-version: ["10.24.1", "12.22.7", "14.18.1", "16.13.0"] #sourced from https://www.npmjs.com/package/node?activeTab=versions
