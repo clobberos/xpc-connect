@@ -5,11 +5,12 @@ executors:
   macos-big-sur:
     macos:
       xcode: 13.1.0
-    resource_class: small
+    # macos executor resource classes can be [medium, large] https://circleci.com/docs/2.0/configuration-reference/#macos-executor
+    resource_class: medium
   macos-mojave:
     macos:
       xcode: 12.4.0
-    resource_class: small
+    resource_class: medium
 
 orbs:
   node: circleci/node@4.7.0
