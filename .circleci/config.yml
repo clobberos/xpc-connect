@@ -39,7 +39,7 @@ jobs:
       - node/install:
           node-version: "16.13.0"
       - run: npm install
-      - run: semantic-release
+      - run: npm run semantic-release
   
 workflows:
   os-tests:
