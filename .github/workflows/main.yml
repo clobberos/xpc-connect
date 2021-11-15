@@ -24,6 +24,8 @@ jobs:
       - run: npm install
       - run: npm run lint
       - run: npm run build
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   deploy:
     runs-on: macos-latest
