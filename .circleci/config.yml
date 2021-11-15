@@ -29,7 +29,6 @@ jobs:
           node-version: << parameters.node-version >>
       - run: npm install
       - run: npm run lint
-      - run: npm run report-coverage
       - run: npm run build
 
   deploy:
