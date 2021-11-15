@@ -1,28 +1,47 @@
-version: '2.1'
+version: 2.1
+
+executors:
+  # list of supported xcode versions https://circleci.com/docs/2.0/testing-ios/#supported-xcode-versions
+  macos-big-sur:
+    macos:
+      xcode: 13.1.0
+  macos-mojave:
+    macos:
+      xcode: 12.4.0
+
 orbs:
-  node: circleci/node@x.y
+  node: circleci/node@4.7.0
+
+jobs:
+  build:
+    parameters:
+      os:
+        type: executor
+      node-version:
+        type: string
+    executor: << parameters.os >>
+    steps:
+      - checkout
+      - node/install:
+          node-version: << parameters.node-version >>
+      - run: npm install
+      - run: npm run lint
+      - run: npm run report-coverage
+      - run: npm run build
+      - when:
+          condition:
+            and:
+              - equal: ['master', << pipeline.git.branch >>]
+              - equal: ['macos-big-sur', << parameters.os >>]
+              - equal: ['16.13.0', << parameters.node-version >>]
+          steps:
+            - run: semantic-release
 
 workflows:
   matrix-tests:
     jobs:
-      - node/test:
+      - build:
           matrix:
             parameters:
-              version:
-                - 16.10.0
-                - 13.11.0
-                - 12.16.0
-                - 10.24.0
-          steps:
-            - run:
-              name: install
-              command: npm install
-            - run:
-              name: lint
-              command: npm run lint
-            - run:
-              name: code coverage
-              command: npm run report-coverage
-            - run:
-              name: build
-              command: npm run build
+              os: [macos-big-sur, macos-mojave]
+              node-version: ["10.24.1", "12.22.7", "14.18.1", "16.13.0"] #sourced from https://www.npmjs.com/package/node?activeTab=versions
