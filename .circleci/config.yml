@@ -28,6 +28,9 @@ jobs:
       - run: npm run lint
       - run: npm run report-coverage
       - run: npm run build
+  deploy:
+    steps:
+      - run: semantic-release
 
 workflows:
   matrix-tests:
@@ -37,3 +40,7 @@ workflows:
             parameters:
               os: [macos-big-sur, macos-mojave]
               node-version: ["10.24.1", "12.22.7", "14.18.1", "16.13.0"] #sourced from https://www.npmjs.com/package/node?activeTab=versions
+      - deploy:
+        filters:
+          branches:
+            - master
