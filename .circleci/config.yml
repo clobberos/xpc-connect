@@ -53,5 +53,7 @@ workflows:
     when:
       equal: [master, << pipeline.git.branch >>]
     jobs:
-      - deploy
+      - deploy:
+          requires:
+            - os-tests
           
