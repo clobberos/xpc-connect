@@ -5,9 +5,12 @@ executors:
   macos-big-sur:
     macos:
       xcode: 13.1.0
+    # macos executor resource classes can be [medium, large] https://circleci.com/docs/2.0/configuration-reference/#macos-executor
+    resource_class: medium
   macos-mojave:
     macos:
       xcode: 12.4.0
+    resource_class: medium
 
 orbs:
   node: circleci/node@4.7.0
@@ -28,20 +31,27 @@ jobs:
       - run: npm run lint
       - run: npm run report-coverage
       - run: npm run build
-      - when:
-          condition:
-            and:
-              - equal: ['master', << pipeline.git.branch >>]
-              - equal: ['macos-big-sur', << parameters.os >>]
-              - equal: ['16.13.0', << parameters.node-version >>]
-          steps:
-            - run: semantic-release
 
+  deploy:
+    executor: macos-big-sur
+    steps:
+      - checkout
+      - node/install:
+          node-version: "16.13.0"
+      - run: npm install
+      - run: semantic-release
+  
 workflows:
-  matrix-tests:
+  os-tests:
     jobs:
       - build:
           matrix:
             parameters:
               os: [macos-big-sur, macos-mojave]
               node-version: ["10.24.1", "12.22.7", "14.18.1", "16.13.0"] #sourced from https://www.npmjs.com/package/node?activeTab=versions
+  deploy:
+    when:
+      equal: [master, << pipeline.git.branch >>]
+    jobs:
+      - deploy
+          
