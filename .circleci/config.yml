@@ -1,0 +1,28 @@
+version: '2.1'
+orbs:
+  node: circleci/node@x.y
+
+workflows:
+  matrix-tests:
+    jobs:
+      - node/test:
+          matrix:
+            parameters:
+              version:
+                - 16.10.0
+                - 13.11.0
+                - 12.16.0
+                - 10.24.0
+          steps:
+            - run:
+              name: install
+              command: npm install
+            - run:
+              name: lint
+              command: npm run lint
+            - run:
+              name: code coverage
+              command: npm run report-coverage
+            - run:
+              name: build
+              command: npm run build
