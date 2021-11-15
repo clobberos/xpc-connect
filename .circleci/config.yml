@@ -15,6 +15,9 @@ workflows:
                 - 10.24.0
           steps:
             - run:
+              name: install
+              command: npm install
+            - run:
               name: lint
               command: npm run lint
             - run:
