@@ -32,16 +32,11 @@ jobs:
       - run: npm run build
 
   deploy:
-    parameters:
-      os:
-        type: executor
-      node-version:
-        type: string
-    executor: << parameters.os >>
+    executor: macos-big-sur
     steps:
       - checkout
       - node/install:
-          node-version: << parameters.node-version >>
+          node-version: "16.13.0"
       - run: npm install
       - run: semantic-release
   
@@ -57,8 +52,5 @@ workflows:
     when:
       equal: [master, << pipeline.git.branch >>]
     jobs:
-      - deploy:
-          parameters:
-            os: macos-big-sur
-            node-version: "16.13.0"
+      - deploy
           
