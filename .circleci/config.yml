@@ -5,9 +5,11 @@ executors:
   macos-big-sur:
     macos:
       xcode: 13.1.0
+    resource_class: small
   macos-mojave:
     macos:
       xcode: 12.4.0
+    resource_class: small
 
 orbs:
   node: circleci/node@4.7.0
@@ -28,20 +30,35 @@ jobs:
       - run: npm run lint
       - run: npm run report-coverage
       - run: npm run build
-      - when:
-          condition:
-            and:
-              - equal: ['master', << pipeline.git.branch >>]
-              - equal: ['macos-big-sur', << parameters.os >>]
-              - equal: ['16.13.0', << parameters.node-version >>]
-          steps:
-            - run: semantic-release
 
+  deploy:
+    parameters:
+      os:
+        type: executor
+      node-version:
+        type: string
+    executor: << parameters.os >>
+    steps:
+      - checkout
+      - node/install:
+          node-version: << parameters.node-version >>
+      - run: npm install
+      - run: semantic-release
+  
 workflows:
-  matrix-tests:
+  os-tests:
     jobs:
       - build:
           matrix:
             parameters:
               os: [macos-big-sur, macos-mojave]
               node-version: ["10.24.1", "12.22.7", "14.18.1", "16.13.0"] #sourced from https://www.npmjs.com/package/node?activeTab=versions
+  deploy:
+    when:
+      equal: [master, << pipeline.git.branch >>]
+    jobs:
+      - deploy:
+          parameters:
+            os: macos-big-sur
+            node-version: "16.13.0"
+          
