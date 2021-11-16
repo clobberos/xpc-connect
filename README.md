@@ -2,7 +2,7 @@
 
 # xpc-connect
 
-[![CircleCI build status](https://circleci.com/gh/jongear/xpc-connect/tree/master.svg?style=svg)](https://circleci.com/gh/jongear/xpc-connect?branch=master) [![downloads](https://img.shields.io/npm/dt/xpc-connect.svg)](https://www.npmjs.com/package/xpc-connect) [![Contributor count](https://img.shields.io/github/contributors/jongear/xpc-connect.svg)](https://github.com/jongear/xpc-connect/graphs/contributors)
+![GitHub Actions build status](https://github.com/jongear/xpc-connect/actions/workflows/main.yml/badge.svg) [![downloads](https://img.shields.io/npm/dt/xpc-connect.svg)](https://www.npmjs.com/package/xpc-connect) [![Contributor count](https://img.shields.io/github/contributors/jongear/xpc-connect.svg)](https://github.com/jongear/xpc-connect/graphs/contributors)
 
 [XPC Services connection](https://developer.apple.com/documentation/xpc/xpc_services_connection_h) bindings for node.js
 
