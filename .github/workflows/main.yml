@@ -13,8 +13,8 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [macos-latest, macos-11, macos-10.15]
-        node: [10.x, 12.x, 14.x, 16.x]
+        os: [macos-latest, macos-11, macos-12]
+        node: [14.x, 16.x, 18.x, 20.x]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -32,11 +32,11 @@ jobs:
     if: github.ref == 'refs/heads/master'
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js 16.x
+      - name: Use Node.js 18.x
         uses: actions/setup-node@v2
         with:
-          node-version: 16.x
-      - run: npm install
+          node-version: 18.x
+      - run: npm ci
       - run: npm run semantic-release
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
