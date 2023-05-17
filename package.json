@@ -55,14 +55,14 @@
   "maintainers": [
     {
       "name": "Jon Gear",
-      "email": "askjon@jongear.io",
+      "email": "jon@gear.dev",
       "url": "https://gear.dev"
     }
   ],
   "license": "MIT",
   "readmeFilename": "README.md",
   "engines": {
-    "node": ">=10.0"
+    "node": ">=14.0"
   },
   "os": [
     "darwin"
@@ -70,7 +70,7 @@
   "dependencies": {
     "bindings": "^1.5.0",
     "nan": "^2.14.0",
-    "node-gyp": "^3.8.0"
+    "node-gyp": "^9.3.1"
   },
   "devDependencies": {
     "commitizen": "^4.3.0",
