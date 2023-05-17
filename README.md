@@ -6,6 +6,9 @@
 
 [XPC Services connection](https://developer.apple.com/documentation/xpc/xpc_services_connection_h) bindings for node.js
 
+This is a continuation of `xpc-connection` https://github.com/sandeepmistry/node-xpc-connection
+
+
 ## Supported data types
 
  * int32/uint32
