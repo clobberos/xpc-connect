@@ -62,7 +62,7 @@
   "license": "MIT",
   "readmeFilename": "README.md",
   "engines": {
-    "node": ">=14.0"
+    "node": ">=18.0"
   },
   "os": [
     "darwin"
