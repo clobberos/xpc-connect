@@ -43,10 +43,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/jongear/xpc-connect.git"
+    "url": "https://github.com/clobberos/xpc-connect.git"
   },
   "bugs": {
-    "url": "https://github.com/jongear/xpc-connect/issues"
+    "url": "https://github.com/clobberos/xpc-connect/issues"
   },
   "keywords": [
     "XPC",
