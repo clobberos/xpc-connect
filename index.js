@@ -1,5 +1,5 @@
-const events = require('events');
-const binding = require('bindings')('xpc-connect.node');
+const events = require("events");
+const binding = require("bindings")("xpc-connect.node");
 
 const XpcConnect = binding.XpcConnect;
 

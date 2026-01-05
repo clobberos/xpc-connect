@@ -15,6 +15,7 @@
     "prebuild": "rimraf build",
     "build": "node-gyp rebuild",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "start": "node index.js",
     "test": "jest",
     "test:coverage": "jest --coverage",
