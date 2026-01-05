@@ -1,7 +1,7 @@
-var events = require('events');
+const events = require('events');
+const binding = require('bindings')('xpc-connect.node');
 
-var binding = require('bindings')('xpc-connect.node');
-var XpcConnect = binding.XpcConnect;
+const XpcConnect = binding.XpcConnect;
 
 inherits(XpcConnect, events.EventEmitter);
 
