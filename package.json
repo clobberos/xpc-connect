@@ -71,7 +71,7 @@
   "dependencies": {
     "bindings": "^1.5.0",
     "nan": "^2.22.0",
-    "node-gyp": "^10.0.0"
+    "node-gyp": "^12.1.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
