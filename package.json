@@ -79,7 +79,7 @@
     "cosmiconfig": "^9.0.0",
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "^9.39.2",
-    "eslint-config-prettier": "^9.1.0",
+    "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.2.1",
     "ghooks": "^2.0.4",
     "jest": "^30.2.0",
